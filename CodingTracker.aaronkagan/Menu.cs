@@ -4,14 +4,12 @@ using Spectre.Console;
 
 public class Menu
 {
-    internal void show()
+    internal static void show()
     {
 
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please choose an option?")
                 .AddChoices("1", "2", "3", "Exit Program"));
-        
-    Console.WriteLine(choice);
     }
 }

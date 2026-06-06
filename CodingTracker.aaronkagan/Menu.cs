@@ -6,7 +6,6 @@ public class Menu
 {
     internal static void show()
     {
-
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please choose an option?")

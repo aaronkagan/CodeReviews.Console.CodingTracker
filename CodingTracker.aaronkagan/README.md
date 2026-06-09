@@ -3,6 +3,10 @@
 
 ## Thought process
 - To create the application in a modular way so that extending the application will be easier in the future
+- What is the user creating? (Coding Session)
+- What information belongs to the coding session?
+- What can the user do with the coding session? (CRUD)
+- 
 
 ### Process
 - What are the menu options? (ie what can the user do?)
@@ -18,6 +22,7 @@
 
 ## Requirements
 
+- This application has the same requirements as the habit tracker, except that now you'll be logging your daily coding time
 - To show the data on the console, you should use the Spectre.Console library
 - Users need to be able to input the date of the occurrence of the coding session
   - You should tell the user the specific format you want the date and time to be logged and not allow any other format

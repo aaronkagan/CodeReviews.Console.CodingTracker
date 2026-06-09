@@ -9,6 +9,6 @@ public class Menu
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please choose an option?")
-                .AddChoices("1", "2", "3", "Exit Program"));
+                .AddChoices("View Coding Sessions", "Start Coding Session", "Add Coding Session", "Update Coding Session", "Delete Coding Session", "Exit Program"));
     }
 }

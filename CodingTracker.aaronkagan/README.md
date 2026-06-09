@@ -4,9 +4,12 @@
 ## Thought process
 - To create the application in a modular way so that extending the application will be easier in the future
 
-Process
+### Process
 - What are the menu options? (ie what can the user do?)
-- What does the database look like? (identify the table(s))
+- What data must be stored in the DB?
+- What are the main classes?
+
+## What I found easy
 
 ## What I found hard
 

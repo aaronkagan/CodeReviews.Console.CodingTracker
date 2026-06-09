@@ -10,10 +10,13 @@
 
 ### Process
 - What are the menu options? (ie what can the user do?)
+- What is the flow in plain English for each of the menu options
 - What data must be stored in the DB?
 - What are the main classes?
 
 ## What I found easy
+
+- Writing out the flow in plain English
 
 ## What I found hard
 

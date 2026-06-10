@@ -10,8 +10,13 @@
 
 ### Process
 - What are the menu options? (ie what can the user do?)
-- What is the flow in plain English for each of the menu options
-  - 
+- What is the flow in plain English for the general application and the menu options
+  - Application starts -> Database created if needed -> Menu displayed 
+    - Add Session Choice: Start time requested and saved to session object -> End time requested and saved to session object -> Save session to DB -> Show confirmation -> Return to main menu
+    - View Sessions Choice: Get sessions from DB -> Display sessions data -> return to main menu
+    - Update Session Choice: Get sessions from DB -> Show sessions -> Ask user which session number to update -> Get updated session info and store in session object -> Update session in DB -> Show confirmation -> Return to main menu
+    - Delete Session Choice: Get sessions from DB -> Show sessions -> Ask user which session number to delete -> Delete session from DB -> Show confirmation -> Return to main menu
+    - Exit program
 - What data must be stored in the DB?
 - What are the main classes?
 

@@ -5,9 +5,24 @@ string choice = Menu.show();
 switch (choice)
 {
     case "Add Coding Session":
-        
+        CodingSessionController sessionController = new();
+        sessionController.AddSession();
+        break;
+    default:
+        break;
 }
 
+
+public class CodingSessionController
+{
+
+    private List<CodingSession> CodingSessions = [];
+
+    internal void AddSession()
+    {
+        
+    }
+}
 
 public class CodingSession
 {
@@ -17,16 +32,13 @@ public class CodingSession
     private DateOnly _date;
 
 
-    public CodingSession(int id, TimeOnly startTime, TimeOnly endtime, DateOnly date)
+    internal CodingSession(int id, TimeOnly startTime, TimeOnly endtime, DateOnly date)
     {
         _id = id;
         _startTime = startTime;
         _endtime = endtime;
         _date = date;
     }
-
-
-
 }
 public class Menu
 {

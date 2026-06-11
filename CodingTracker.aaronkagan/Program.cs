@@ -14,14 +14,42 @@ internal class CodingSessionController
         TimeOnly startTime = getStartTime();
         TimeOnly endTime = getEndTime();
 
-        Console.WriteLine(date);
-        Console.WriteLine(startTime);
-        Console.WriteLine(endTime);
+        CodingSession session = new(startTime, endTime, date);
+        Repository repository = new();
+        repository.InsertSession(session);
+    }
+    
+    private TimeOnly getStartTime()
+    {
+        Console.Write("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
+        TimeOnly startTime = getTime();
+        return startTime;
     }
 
+    private TimeOnly getEndTime()
+    {
+        Console.Write("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
+        TimeOnly endTime = getTime();
+        return endTime;
+    }
+
+    private TimeOnly getTime()
+    {
+        string? input = Console.ReadLine();
+        string timeFormat = "HH:mm";
+        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
+        {
+            Console.WriteLine($"Time entered: {targetTime}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
+        }
+
+        return targetTime;
+    }
     private DateOnly getDate()
     {
-
         Console.Write("Enter a date (YYYY-MM-DD): ");
         string? input = Console.ReadLine();
         string format = "yyyy-MM-dd"; 
@@ -34,47 +62,12 @@ internal class CodingSessionController
             Console.WriteLine("Invalid date format. Please try again using YYYY-MM-DD.");
         }
         return targetDate;
-
-    }
-
-    private TimeOnly getStartTime()
-    {
-        Console.Write("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
-        string? input = Console.ReadLine();
-        string timeFormat = "HH:mm";
-        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly startTime))
-        {
-            Console.WriteLine($"Time entered: {startTime}");
-        }
-        else
-        {
-            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
-        }
-
-        return startTime;
-    }
-
-    private TimeOnly getEndTime()
-    {
-        Console.Write("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
-        string? input = Console.ReadLine();
-        string timeFormat = "HH:mm";
-        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly endTime))
-        {
-            Console.WriteLine($"Time entered: {endTime}");
-        }
-        else
-        {
-            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
-        }
-
-        return endTime;
     }
 }
 
 internal class Repository
 {
-    private void InsertSession()
+    internal void InsertSession(CodingSession session)
     {
         
     }
@@ -88,9 +81,8 @@ internal class CodingSession
     private DateOnly _date;
 
 
-    internal CodingSession(int id, TimeOnly startTime, TimeOnly endtime, DateOnly date)
+    internal CodingSession(TimeOnly startTime, TimeOnly endtime, DateOnly date)
     {
-        _id = id;
         _startTime = startTime;
         _endtime = endtime;
         _date = date;

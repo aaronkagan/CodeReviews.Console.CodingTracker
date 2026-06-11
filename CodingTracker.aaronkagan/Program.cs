@@ -1,27 +1,75 @@
 ﻿using Spectre.Console;
+using System.Globalization;
 
 string choice = Menu.show();
-
-switch (choice)
-{
-    case "Add Coding Session":
-        CodingSessionController sessionController = new();
-        sessionController.AddSession();
-        break;
-}
+ChoiceHandler choiceHandler = new();
+choiceHandler.HandleChoice(choice);
 
 
 internal class CodingSessionController
 {
-    private List<CodingSession> CodingSessions = [];
-
     internal void AddSession()
     {
-        
+        DateOnly date = getDate();
+        TimeOnly startTime = getStartTime();
+        TimeOnly endTime = getEndTime();
+
+        Console.WriteLine(date);
+        Console.WriteLine(startTime);
+        Console.WriteLine(endTime);
     }
-    private void getDate() {}
-    private void getStartTime(){}
-    private void getEndTime(){}
+
+    private DateOnly getDate()
+    {
+
+        Console.Write("Enter a date (YYYY-MM-DD): ");
+        string? input = Console.ReadLine();
+        string format = "yyyy-MM-dd"; 
+        if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly targetDate))
+        {
+            Console.WriteLine($"You entered: {targetDate}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid date format. Please try again using YYYY-MM-DD.");
+        }
+        return targetDate;
+
+    }
+
+    private TimeOnly getStartTime()
+    {
+        Console.Write("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
+        string? input = Console.ReadLine();
+        string timeFormat = "HH:mm";
+        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly startTime))
+        {
+            Console.WriteLine($"Time entered: {startTime}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
+        }
+
+        return startTime;
+    }
+
+    private TimeOnly getEndTime()
+    {
+        Console.Write("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
+        string? input = Console.ReadLine();
+        string timeFormat = "HH:mm";
+        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly endTime))
+        {
+            Console.WriteLine($"Time entered: {endTime}");
+        }
+        else
+        {
+            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
+        }
+
+        return endTime;
+    }
 }
 
 internal class Repository
@@ -32,7 +80,7 @@ internal class Repository
     }
 }
 
-public class CodingSession
+internal class CodingSession
 {
     private int _id;
     private TimeOnly _startTime;
@@ -48,7 +96,7 @@ public class CodingSession
         _date = date;
     }
 }
-public class Menu
+internal class Menu
 {
     internal static string show()
     {
@@ -59,6 +107,21 @@ public class Menu
         return choice;
     }
 }
+
+internal class ChoiceHandler
+{
+    internal void HandleChoice(string choice)
+    {
+        switch (choice)
+        {
+            case "Add Coding Session":
+                CodingSessionController sessionController = new();
+                sessionController.AddSession();
+                break;
+        }
+    }
+}
+
 
 
 

@@ -8,17 +8,25 @@ switch (choice)
         CodingSessionController sessionController = new();
         sessionController.AddSession();
         break;
-    default:
-        break;
 }
 
 
-public class CodingSessionController
+internal class CodingSessionController
 {
-
     private List<CodingSession> CodingSessions = [];
 
     internal void AddSession()
+    {
+        
+    }
+    private void getDate() {}
+    private void getStartTime(){}
+    private void getEndTime(){}
+}
+
+internal class Repository
+{
+    private void InsertSession()
     {
         
     }

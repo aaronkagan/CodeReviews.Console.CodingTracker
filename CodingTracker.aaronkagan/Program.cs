@@ -1,24 +1,42 @@
 ﻿using Spectre.Console;
 
-Menu.show();
+string choice = Menu.show();
+
+switch (choice)
+{
+    case "Add Coding Session":
+        
+}
 
 
 public class CodingSession
 {
-    private int Id { get; set; }
-    private TimeOnly StartTime { get; set; }
-    private TimeOnly EndTime { get; set; }
-    private DateOnly Date { get; set; }
-    
+    private int _id;
+    private TimeOnly _startTime;
+    private TimeOnly _endtime;
+    private DateOnly _date;
+
+
+    public CodingSession(int id, TimeOnly startTime, TimeOnly endtime, DateOnly date)
+    {
+        _id = id;
+        _startTime = startTime;
+        _endtime = endtime;
+        _date = date;
+    }
+
+
+
 }
 public class Menu
 {
-    internal static void show()
+    internal static string show()
     {
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please choose an option?")
                 .AddChoices("View Coding Sessions", "Start Coding Session", "Add Coding Session", "Update Coding Session", "Delete Coding Session", "Exit Program"));
+        return choice;
     }
 }
 

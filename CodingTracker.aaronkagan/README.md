@@ -6,7 +6,6 @@
 - What is the user creating? (Coding Session)
 - What information belongs to the coding session?
 - What can the user do with the coding session? (CRUD)
-- 
 
 ### Process
 - What are the menu options? (ie what can the user do?)
@@ -17,8 +16,28 @@
     - Update Session Choice: Get sessions from DB -> Show sessions -> Ask user which session number to update -> Get updated session info and store in session object -> Update session in DB -> Show confirmation -> Return to main menu
     - Delete Session Choice: Get sessions from DB -> Show sessions -> Ask user which session number to delete -> Delete session from DB -> Show confirmation -> Return to main menu
     - Exit program
+- Write a complete list of everything the application needs to do (functions/responsibilities), without thinking about classes, OOP, or architecture, and then group related items together.
+  - UI
+    - ShowMenu
+    - DisplayAllSessions
+  - Input
+    - StoreMainMenuChoice
+    - GetDate
+    - GetStartTime
+    - GetEndTime
+  - Database
+    - CreateDatabase
+    - CreateTable
+    - CreateSession
+    - UpdateSession
+    - DeleteSession
+    - GetAllSessions
 - What data must be stored in the DB?
-- What are the main classes?
+  - Session
+    - Id
+    - Date
+    - StartTime
+    - EndTime
 
 ## What I found easy
 

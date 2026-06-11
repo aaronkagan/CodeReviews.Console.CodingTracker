@@ -35,11 +35,10 @@ internal class CodingSessionController
 
     private TimeOnly getTime()
     {
-        string input = AnsiConsole.Ask<string>("");
-        string timeFormat = "HH:mm";
-
         while (true)
         {
+            string input = AnsiConsole.Ask<string>("");
+            string timeFormat = "HH:mm";
             if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
             {
                 AnsiConsole.MarkupLine($"Time entered: {targetTime}");
@@ -50,12 +49,10 @@ internal class CodingSessionController
     }
     private DateOnly getDate()
     {
-       
-        string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
-        string format = "yyyy-MM-dd";
-
         while (true)
         {
+            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
+            string format = "yyyy-MM-dd";
             if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out DateOnly targetDate))
             {

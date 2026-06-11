@@ -38,6 +38,16 @@
     - Date
     - StartTime
     - EndTime
+- Start with a single vertical slice:
+  - Application starts 
+  - Database exists
+  - User chooses Add Session 
+  - Session is created 
+  - Session is saved
+-Once that works, add:
+  - View Sessions 
+  - Update Session 
+  - Delete Session
 
 ## What I found easy
 

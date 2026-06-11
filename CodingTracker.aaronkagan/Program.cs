@@ -21,47 +21,49 @@ internal class CodingSessionController
     
     private TimeOnly getStartTime()
     {
-        Console.Write("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
+        AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly startTime = getTime();
         return startTime;
     }
 
     private TimeOnly getEndTime()
     {
-        Console.Write("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
+        AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly endTime = getTime();
         return endTime;
     }
 
     private TimeOnly getTime()
     {
-        string? input = Console.ReadLine();
+        string input = AnsiConsole.Ask<string>("");
         string timeFormat = "HH:mm";
-        if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
-        {
-            Console.WriteLine($"Time entered: {targetTime}");
-        }
-        else
-        {
-            Console.WriteLine("Invalid time format. Please use the 24-hour HH:mm format.");
-        }
 
-        return targetTime;
+        while (true)
+        {
+            if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
+            {
+                AnsiConsole.MarkupLine($"Time entered: {targetTime}");
+                return targetTime;
+            }
+            AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
+        }
     }
     private DateOnly getDate()
     {
-        Console.Write("Enter a date (YYYY-MM-DD): ");
-        string? input = Console.ReadLine();
-        string format = "yyyy-MM-dd"; 
-        if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly targetDate))
+       
+        string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
+        string format = "yyyy-MM-dd";
+
+        while (true)
         {
-            Console.WriteLine($"You entered: {targetDate}");
+            if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out DateOnly targetDate))
+            {
+                AnsiConsole.MarkupLine($"You entered: {targetDate}");
+                return targetDate;
+            }
+            AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
         }
-        else
-        {
-            Console.WriteLine("Invalid date format. Please try again using YYYY-MM-DD.");
-        }
-        return targetDate;
     }
 }
 

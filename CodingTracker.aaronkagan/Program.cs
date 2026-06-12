@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Data.Sqlite;
 using Spectre.Console;
 using System.Globalization;
 
 
+
+Repository.InitializeDatabase();
 string choice = Menu.show();
 ChoiceHandler choiceHandler = new();
 choiceHandler.HandleChoice(choice);
@@ -15,10 +17,8 @@ internal class CodingSessionController
         DateOnly date = GetDate();
         TimeOnly startTime = GetStartTime();
         TimeOnly endTime = GetEndTime();
-
         CodingSession session = new(startTime, endTime, date);
-        Repository repository = new();
-        repository.InsertSession(session);
+        Repository.InsertSession(session);
     }
     
     private TimeOnly GetStartTime()
@@ -66,21 +66,34 @@ internal class CodingSessionController
     }
 }
 
-internal class Repository
+internal static class Repository
 {
-    private string connectionString = "Data Source=coding-tracker.db";
+    private static string _connectionString = "Data Source=coding-tracker.db";
 
-    internal void InitializeDatabase()
+    internal static void InitializeDatabase()
     {
-        // // Connect to the database
-        // using (var connection = new SQLiteConnection(connectionString))
-        // {
-        //     // Create a query that retrieves all authors    
-        //     var sql = "SELECT * FROM Authors LIMIT 1;";     
-        // }
+        using (var connection = new SqliteConnection(_connectionString))
+        {
+            connection.Open();
+
+            var createTableSql = @"
+            CREATE TABLE IF NOT EXISTS sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
+                date TEXT NOT NULL
+            );";
+
+            using var command = new SqliteCommand(createTableSql, connection);
+            command.ExecuteNonQuery();
+        }
     }
-    
-    internal void InsertSession(CodingSession session)
+    internal static void InsertSession(CodingSession session)
+    {
+        
+    }
+
+    internal static void SeedData()
     {
         
     }

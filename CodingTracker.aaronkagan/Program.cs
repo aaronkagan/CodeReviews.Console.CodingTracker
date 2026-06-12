@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Spectre.Console;
 using System.Globalization;
+using Dapper;
 
 
 
@@ -15,8 +16,24 @@ internal class CodingSessionController
     internal void AddSession()
     {
         DateOnly date = GetDate();
-        TimeOnly startTime = GetStartTime();
-        TimeOnly endTime = GetEndTime();
+
+        TimeOnly startTime = TimeOnly.MinValue;
+        TimeOnly endTime = TimeOnly.MinValue;
+        while (true)
+        {
+            startTime = GetStartTime();
+            endTime = GetEndTime();
+            if (endTime <= startTime)
+            {
+                AnsiConsole.MarkupLine("You cannot extend your coding session to the next day");
+                AnsiConsole.MarkupLine("Please end your session at 23:59 and create a new session for the next day starting at 00:00.");
+            }
+            else
+            {
+                break;
+            }
+        }
+       
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
     }
@@ -74,23 +91,29 @@ internal static class Repository
     {
         using (var connection = new SqliteConnection(_connectionString))
         {
-            connection.Open();
-
             var createTableSql = @"
-            CREATE TABLE IF NOT EXISTS sessions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                start_time TEXT NOT NULL,
-                end_time TEXT NOT NULL,
-                date TEXT NOT NULL
-            );";
+                    CREATE TABLE IF NOT EXISTS sessions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    start_time TEXT NOT NULL,
+                    end_time TEXT NOT NULL,
+                    date TEXT NOT NULL
+        );";
 
-            using var command = new SqliteCommand(createTableSql, connection);
-            command.ExecuteNonQuery();
+            connection.Execute(createTableSql);
         }
+
     }
     internal static void InsertSession(CodingSession session)
     {
-        
+        using (var connection = new SqliteConnection(_connectionString))
+        {
+            var sql = "INSERT INTO sessions (date, start_time, end_time) VALUES (@Date, @StartTime, @EndTime)";
+            {
+                var anonymousSession = new { Date = session.SqlDate, StartTime = session._startTime, EndTime = session._endtime };
+                var rowsAffected = connection.Execute(sql, anonymousSession);
+                Console.WriteLine($"{rowsAffected} row(s) inserted.");
+            }
+        }
     }
 
     internal static void SeedData()
@@ -101,12 +124,15 @@ internal static class Repository
 
 internal class CodingSession
 {
-    private int _id;
-    private TimeOnly _startTime;
-    private TimeOnly _endtime;
-    private DateOnly _date;
+    internal int _id;
+    internal TimeOnly _startTime;
+    internal TimeOnly _endtime;
+    internal DateOnly _date;
+    
+    internal DateTime SqlDate => _date.ToDateTime(TimeOnly.MinValue);
+  
 
-
+    
     internal CodingSession(TimeOnly startTime, TimeOnly endtime, DateOnly date)
     {
         _startTime = startTime;

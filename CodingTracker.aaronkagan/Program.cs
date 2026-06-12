@@ -14,6 +14,28 @@ choiceHandler.HandleChoice(choice);
 
 internal class CodingSessionController
 {
+    internal void ViewSessions()
+    {
+        List<CodingSession> codingSessions = Repository.ReadSessions();
+        
+        var table = new Table()
+            .RoundedBorder()
+            .BorderColor(Color.Grey)
+            .Title("[yellow bold]Coding Sessions[/]");
+  
+        table.AddColumn("ID");
+        table.AddColumn("Date", col => col.Centered());
+        table.AddColumn("Start Time", col => col.Centered());
+        table.AddColumn("End Time", col => col.RightAligned());
+        
+        foreach (var codingSession in codingSessions)
+        {
+            table.AddRow(codingSession.Id.ToString(), codingSession.Date.ToString(), codingSession.StartTime.ToString(), codingSession.EndTime.ToString());
+        }
+        
+        AnsiConsole.Write(table);
+    }
+    
     internal void AddSession()
     {
         DateOnly date = GetDate();
@@ -85,7 +107,7 @@ internal class CodingSessionController
 
 internal static class Repository
 {
-    private static string _connectionString = "Data Source=coding-tracker.db";
+    private static readonly string _connectionString = "Data Source=coding-tracker.db";
 
     internal static void InitializeDatabase()
     {
@@ -109,35 +131,44 @@ internal static class Repository
         {
             var sql = "INSERT INTO sessions (date, start_time, end_time) VALUES (@Date, @StartTime, @EndTime)";
             {
-                var anonymousSession = new { Date = session.SqlDate, StartTime = session._startTime, EndTime = session._endtime };
+                var anonymousSession = new { Date = session.Date, StartTime = session.StartTime, EndTime = session.EndTime };
                 var rowsAffected = connection.Execute(sql, anonymousSession);
                 Console.WriteLine($"{rowsAffected} row(s) inserted.");
             }
         }
     }
 
-    internal static void SeedData()
+    internal static List<CodingSession> ReadSessions()
     {
-        
+        string sql = "SELECT * FROM sessions";
+
+        using (var connection = new SqliteConnection(_connectionString))
+        {            
+            var codingSessions = connection.Query<CodingSession>(sql).ToList();
+
+            return codingSessions;
+        }
     }
+
+    // internal static void SeedData()
+    // {
+    //     
+    // }
 }
 
 internal class CodingSession
 {
-    internal int _id;
-    internal TimeOnly _startTime;
-    internal TimeOnly _endtime;
-    private readonly DateOnly _date;
-    
-    internal DateTime SqlDate => _date.ToDateTime(TimeOnly.MinValue);
-  
-
-    
+    public int Id { get; init; }
+    public TimeOnly StartTime { get; init; }
+    public TimeOnly EndTime { get; init; }
+    public DateOnly Date { get; init; }
+    // Empty constructor for use by Dapper Reflection.
+    internal CodingSession() { } 
     internal CodingSession(TimeOnly startTime, TimeOnly endtime, DateOnly date)
     {
-        _startTime = startTime;
-        _endtime = endtime;
-        _date = date;
+        StartTime = startTime;
+        EndTime = endtime;
+        Date = date;
     }
 }
 internal class Menu
@@ -163,11 +194,14 @@ internal class ChoiceHandler
 {
     internal void HandleChoice(string choice)
     {
+        CodingSessionController sessionController = new();
         switch (choice)
         {
             case "Add Coding Session":
-                CodingSessionController sessionController = new();
                 sessionController.AddSession();
+                break;
+            case "View Coding Sessions":
+                sessionController.ViewSessions();
                 break;
         }
     }
@@ -186,7 +220,6 @@ public class DateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
         return DateOnly.Parse(value.ToString()!);
     }
 }
-
 public class TimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
 {
     public override void SetValue(IDbDataParameter parameter, TimeOnly value)

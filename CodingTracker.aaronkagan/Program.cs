@@ -1,5 +1,7 @@
-﻿using Spectre.Console;
+﻿using System.ComponentModel;
+using Spectre.Console;
 using System.Globalization;
+
 
 string choice = Menu.show();
 ChoiceHandler choiceHandler = new();
@@ -10,30 +12,30 @@ internal class CodingSessionController
 {
     internal void AddSession()
     {
-        DateOnly date = getDate();
-        TimeOnly startTime = getStartTime();
-        TimeOnly endTime = getEndTime();
+        DateOnly date = GetDate();
+        TimeOnly startTime = GetStartTime();
+        TimeOnly endTime = GetEndTime();
 
         CodingSession session = new(startTime, endTime, date);
         Repository repository = new();
         repository.InsertSession(session);
     }
     
-    private TimeOnly getStartTime()
+    private TimeOnly GetStartTime()
     {
         AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
-        TimeOnly startTime = getTime();
+        TimeOnly startTime = GetTime();
         return startTime;
     }
 
-    private TimeOnly getEndTime()
+    private TimeOnly GetEndTime()
     {
         AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
-        TimeOnly endTime = getTime();
+        TimeOnly endTime = GetTime();
         return endTime;
     }
 
-    private TimeOnly getTime()
+    private TimeOnly GetTime()
     {
         while (true)
         {
@@ -47,7 +49,7 @@ internal class CodingSessionController
             AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
         }
     }
-    private DateOnly getDate()
+    private DateOnly GetDate()
     {
         while (true)
         {
@@ -66,6 +68,18 @@ internal class CodingSessionController
 
 internal class Repository
 {
+    private string connectionString = "Data Source=coding-tracker.db";
+
+    internal void InitializeDatabase()
+    {
+        // // Connect to the database
+        // using (var connection = new SQLiteConnection(connectionString))
+        // {
+        //     // Create a query that retrieves all authors    
+        //     var sql = "SELECT * FROM Authors LIMIT 1;";     
+        // }
+    }
+    
     internal void InsertSession(CodingSession session)
     {
         
@@ -94,7 +108,14 @@ internal class Menu
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please choose an option?")
-                .AddChoices("View Coding Sessions", "Start Coding Session", "Add Coding Session", "Update Coding Session", "Delete Coding Session", "Exit Program"));
+                .AddChoices(
+                    "View Coding Sessions",
+                    "Start Coding Session",
+                    "Add Coding Session", 
+                    "Update Coding Session",
+                    "Delete Coding Session",
+                    "Exit Program"
+                    ));
         return choice;
     }
 }
@@ -112,8 +133,4 @@ internal class ChoiceHandler
         }
     }
 }
-
-
-
-
 

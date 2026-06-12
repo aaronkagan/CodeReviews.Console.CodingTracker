@@ -2,9 +2,10 @@
 using Spectre.Console;
 using System.Globalization;
 using Dapper;
+using System.Data;
 
-
-
+SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 Repository.InitializeDatabase();
 string choice = Menu.show();
 ChoiceHandler choiceHandler = new();
@@ -16,9 +17,8 @@ internal class CodingSessionController
     internal void AddSession()
     {
         DateOnly date = GetDate();
-
-        TimeOnly startTime = TimeOnly.MinValue;
-        TimeOnly endTime = TimeOnly.MinValue;
+        TimeOnly startTime;
+        TimeOnly endTime;
         while (true)
         {
             startTime = GetStartTime();
@@ -127,7 +127,7 @@ internal class CodingSession
     internal int _id;
     internal TimeOnly _startTime;
     internal TimeOnly _endtime;
-    internal DateOnly _date;
+    private readonly DateOnly _date;
     
     internal DateTime SqlDate => _date.ToDateTime(TimeOnly.MinValue);
   
@@ -173,3 +173,29 @@ internal class ChoiceHandler
     }
 }
 
+
+public class DateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
+{
+    public override void SetValue(IDbDataParameter parameter, DateOnly value)
+    {
+        parameter.Value = value.ToString("yyyy-MM-dd");
+    }
+
+    public override DateOnly Parse(object value)
+    {
+        return DateOnly.Parse(value.ToString()!);
+    }
+}
+
+public class TimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
+{
+    public override void SetValue(IDbDataParameter parameter, TimeOnly value)
+    {
+        parameter.Value = value.ToString("HH:mm:ss");
+    }
+
+    public override TimeOnly Parse(object value)
+    {
+        return TimeOnly.Parse(value.ToString()!);
+    }
+}

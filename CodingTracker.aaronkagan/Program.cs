@@ -165,29 +165,29 @@ internal static class Repository
         
         List<CodingSession> _entries =
         [
-            new CodingSession(new TimeOnly(09, 00), new TimeOnly(10, 30), new DateOnly(2026, 01, 02)),
-            new CodingSession(new TimeOnly(11, 00), new TimeOnly(12, 15), new DateOnly(2026, 01, 03)),
-            new CodingSession(new TimeOnly(13, 00), new TimeOnly(14, 45), new DateOnly(2026, 01, 04)),
-            new CodingSession(new TimeOnly(18, 00), new TimeOnly(19, 30), new DateOnly(2026, 01, 05)),
-            new CodingSession(new TimeOnly(20, 15), new TimeOnly(21, 00), new DateOnly(2026, 01, 06)),
+            new (new TimeOnly(09, 00), new TimeOnly(10, 30), new DateOnly(2026, 01, 02)),
+            new (new TimeOnly(11, 00), new TimeOnly(12, 15), new DateOnly(2026, 01, 03)),
+            new (new TimeOnly(13, 00), new TimeOnly(14, 45), new DateOnly(2026, 01, 04)),
+            new (new TimeOnly(18, 00), new TimeOnly(19, 30), new DateOnly(2026, 01, 05)),
+            new (new TimeOnly(20, 15), new TimeOnly(21, 00), new DateOnly(2026, 01, 06)),
 
-            new CodingSession(new TimeOnly(08, 30), new TimeOnly(09, 45), new DateOnly(2026, 01, 07)),
-            new CodingSession(new TimeOnly(10, 00), new TimeOnly(11, 20), new DateOnly(2026, 01, 08)),
-            new CodingSession(new TimeOnly(14, 00), new TimeOnly(15, 30), new DateOnly(2026, 01, 09)),
-            new CodingSession(new TimeOnly(16, 00), new TimeOnly(17, 10), new DateOnly(2026, 01, 10)),
-            new CodingSession(new TimeOnly(19, 00), new TimeOnly(20, 30), new DateOnly(2026, 01, 11)),
+            new (new TimeOnly(08, 30), new TimeOnly(09, 45), new DateOnly(2026, 01, 07)),
+            new (new TimeOnly(10, 00), new TimeOnly(11, 20), new DateOnly(2026, 01, 08)),
+            new (new TimeOnly(14, 00), new TimeOnly(15, 30), new DateOnly(2026, 01, 09)),
+            new (new TimeOnly(16, 00), new TimeOnly(17, 10), new DateOnly(2026, 01, 10)),
+            new (new TimeOnly(19, 00), new TimeOnly(20, 30), new DateOnly(2026, 01, 11)),
 
-            new CodingSession(new TimeOnly(09, 15), new TimeOnly(10, 00), new DateOnly(2026, 01, 12)),
-            new CodingSession(new TimeOnly(10, 30), new TimeOnly(12, 00), new DateOnly(2026, 01, 13)),
-            new CodingSession(new TimeOnly(13, 30), new TimeOnly(15, 00), new DateOnly(2026, 01, 14)),
-            new CodingSession(new TimeOnly(15, 15), new TimeOnly(16, 45), new DateOnly(2026, 01, 15)),
-            new CodingSession(new TimeOnly(18, 30), new TimeOnly(20, 00), new DateOnly(2026, 01, 16)),
+            new (new TimeOnly(09, 15), new TimeOnly(10, 00), new DateOnly(2026, 01, 12)),
+            new (new TimeOnly(10, 30), new TimeOnly(12, 00), new DateOnly(2026, 01, 13)),
+            new (new TimeOnly(13, 30), new TimeOnly(15, 00), new DateOnly(2026, 01, 14)),
+            new (new TimeOnly(15, 15), new TimeOnly(16, 45), new DateOnly(2026, 01, 15)),
+            new (new TimeOnly(18, 30), new TimeOnly(20, 00), new DateOnly(2026, 01, 16)),
 
-            new CodingSession(new TimeOnly(09, 00), new TimeOnly(10, 10), new DateOnly(2026, 01, 17)),
-            new CodingSession(new TimeOnly(10, 20), new TimeOnly(11, 40), new DateOnly(2026, 01, 18)),
-            new CodingSession(new TimeOnly(12, 00), new TimeOnly(13, 30), new DateOnly(2026, 01, 19)),
-            new CodingSession(new TimeOnly(14, 10), new TimeOnly(15, 40), new DateOnly(2026, 01, 20)),
-            new CodingSession(new TimeOnly(17, 00), new TimeOnly(18, 20), new DateOnly(2026, 01, 21)),
+            new (new TimeOnly(09, 00), new TimeOnly(10, 10), new DateOnly(2026, 01, 17)),
+            new (new TimeOnly(10, 20), new TimeOnly(11, 40), new DateOnly(2026, 01, 18)),
+            new (new TimeOnly(12, 00), new TimeOnly(13, 30), new DateOnly(2026, 01, 19)),
+            new (new TimeOnly(14, 10), new TimeOnly(15, 40), new DateOnly(2026, 01, 20)),
+            new (new TimeOnly(17, 00), new TimeOnly(18, 20), new DateOnly(2026, 01, 21)),
         ];
         
         using (var connection = new SqliteConnection(_connectionString))

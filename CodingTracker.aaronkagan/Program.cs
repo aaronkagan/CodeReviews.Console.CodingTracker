@@ -9,9 +9,82 @@ SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
 Repository.InitializeDatabase();
 string choice = Menu.Show();
-ChoiceHandler choiceHandler = new();
-choiceHandler.HandleChoice(choice);
+ChoiceHandler.HandleChoice(choice);
 
+
+
+
+internal static  class Helpers
+{
+    internal static DateOnly GetDate()
+    {
+        while (true)
+        {
+            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
+            string format = "yyyy-MM-dd";
+            if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out DateOnly targetDate))
+            {
+                AnsiConsole.MarkupLine($"You entered: {targetDate}");
+                return targetDate;
+            }
+            AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
+        }
+    }
+    
+    internal static int GetId()
+    {
+        
+        while (true)
+        {
+            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row.");
+            if (!Int32.TryParse(userInput, out int id))
+            {
+                AnsiConsole.MarkupLine("Invalid input. Please enter number.");
+            }  
+            if (Repository.CheckIfId(id))
+            {   
+                return id;
+            }
+            AnsiConsole.MarkupLine("\nError. No row with that Id.");
+        }
+    }
+    
+    internal static TimeOnly GetStartTime()
+    {
+        AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
+        TimeOnly startTime = GetTime();
+        return startTime;
+    }
+
+    internal static TimeOnly GetEndTime()
+    {
+        AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
+        TimeOnly endTime = GetTime();
+        return endTime;
+    }
+
+    private static TimeOnly GetTime()
+    {
+        while (true)
+        {
+            string input = AnsiConsole.Ask<string>("");
+            string timeFormat = "HH:mm";
+            if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
+            {
+                AnsiConsole.MarkupLine($"Time entered: {targetTime}");
+                return targetTime;
+            }
+            AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
+        }
+    }
+    
+    internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
+    {
+        TimeSpan duration = endTIme - startTime;
+        return duration;
+    }
+}
 
 
 internal class CodingSessionController
@@ -42,13 +115,13 @@ internal class CodingSessionController
     
     internal void AddSession()
     {
-        DateOnly date = GetDate();
-        TimeOnly startTime = GetStartTime();
+        DateOnly date = Helpers.GetDate();
+        TimeOnly startTime = Helpers.GetStartTime();
         TimeOnly endTime;
         
         while (true)
         {
-            endTime = GetEndTime();
+            endTime = Helpers.GetEndTime();
             if (endTime <= startTime)
             {
                 AnsiConsole.MarkupLine("You cannot extend your coding session to the next day");
@@ -63,76 +136,14 @@ internal class CodingSessionController
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
     }
-
-    private int GetId()
-    {
-        
-        while (true)
-        {
-            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row.");
-            if (!Int32.TryParse(userInput, out int id))
-            {
-                AnsiConsole.MarkupLine("Invalid input. Please enter number.");
-            }  
-            if (Repository.CheckIfId(id))
-            {   
-                 return id;
-            }
-            AnsiConsole.MarkupLine("\nError. No row with that Id.");
-        }
-    }
     
-    private TimeOnly GetStartTime()
-    {
-        AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
-        TimeOnly startTime = GetTime();
-        return startTime;
-    }
-
-    private TimeOnly GetEndTime()
-    {
-        AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
-        TimeOnly endTime = GetTime();
-        return endTime;
-    }
-
-    private TimeOnly GetTime()
-    {
-        while (true)
-        {
-            string input = AnsiConsole.Ask<string>("");
-            string timeFormat = "HH:mm";
-            if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
-            {
-                AnsiConsole.MarkupLine($"Time entered: {targetTime}");
-                return targetTime;
-            }
-            AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
-        }
-    }
-    private DateOnly GetDate()
-    {
-        while (true)
-        {
-            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
-            string format = "yyyy-MM-dd";
-            if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                    out DateOnly targetDate))
-            {
-                AnsiConsole.MarkupLine($"You entered: {targetDate}");
-                return targetDate;
-            }
-            AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
-        }
-    }
-
     internal void DeleteSession()
     {
         CodingSessionController sessionController = new();
         sessionController.ViewSessions();
         while (true)
         {
-            int id = sessionController.GetId();
+            int id = Helpers.GetId();
             bool deleted = Repository.DeleteSession(id);
             if (deleted)
             {
@@ -146,14 +157,13 @@ internal class CodingSessionController
     internal void UpdateSession()
     {
         CodingSessionController sessionController = new();
-        CodingSession session = new();
         sessionController.ViewSessions();
         while (true)
         {
-            var id = sessionController.GetId();
-            var date = sessionController.GetDate();
-            var startTime = sessionController.GetStartTime();
-            var endTime = sessionController.GetEndTime();
+            var id = Helpers.GetId();
+            var date = Helpers.GetDate();
+            var startTime = Helpers.GetStartTime();
+            var endTime = Helpers.GetEndTime();
             
             bool updated = Repository.UpdateSession(id, date, startTime, endTime);
             if (updated)
@@ -164,13 +174,7 @@ internal class CodingSessionController
             }
         }
     }
-
-    internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
-    {
-        TimeSpan duration = endTIme - startTime;
-        return duration;
-    }
-
+    
     internal void ExitProgram()
     {
         AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
@@ -262,7 +266,7 @@ internal static class Repository
     
     internal static bool UpdateSession(int id, DateOnly date, TimeOnly startTime, TimeOnly endTime)
     {
-        TimeSpan duration = CodingSessionController.CalculateDuration(startTime, endTime);
+        TimeSpan duration = Helpers.CalculateDuration(startTime, endTime);
         using (var connection = new SqliteConnection(ConnectionString))
         {
             var rowsAffected = connection.Execute(
@@ -329,10 +333,10 @@ internal class CodingSession
         StartTime = startTime;
         EndTime = endtime;
         Date = date;
-        Duration = CodingSessionController.CalculateDuration(startTime, endtime);
+        Duration = Helpers.CalculateDuration(startTime, endtime);
     }
 }
-internal class Menu
+internal static class Menu
 {
     internal static string Show()
     {
@@ -352,9 +356,9 @@ internal class Menu
     }
 }
 
-internal class ChoiceHandler
+internal static class ChoiceHandler
 {
-    internal void HandleChoice(string choice)
+    internal static void HandleChoice(string choice)
     {
         CodingSessionController sessionController = new();
         switch (choice)

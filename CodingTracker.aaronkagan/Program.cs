@@ -127,6 +127,34 @@ internal class CodingSessionController
         }
     }
 
+    internal void UpdateSession()
+    {
+        CodingSessionController sessionController = new();
+        CodingSession session = new();
+        sessionController.ViewSessions();
+        while (true)
+        {
+            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row you want to update.");
+            var date = sessionController.GetDate();
+            var startTime = sessionController.GetStartTime();
+            var endTime = sessionController.GetEndTime();
+            
+            if (Int32.TryParse(userInput, out int id))
+            {
+                bool updated = Repository.UpdateSession(id, date, startTime, endTime);
+                if (updated)
+                {
+                    Console.Clear();
+                    AnsiConsole.MarkupLine($"\n\nUpdate Successful!");
+                    break;
+                }
+                AnsiConsole.MarkupLine("\nError. No row with that Id.");
+                break;
+            }
+            AnsiConsole.MarkupLine("Invalid input. Please enter number.");
+        }
+    }
+
     internal void ExitProgram()
     {
         AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
@@ -171,6 +199,8 @@ internal static class Repository
         }
     }
 
+   
+
     internal static List<CodingSession> ReadSessions()
     {
         string sql = @"SELECT
@@ -201,6 +231,22 @@ internal static class Repository
 
             return false;
 
+        }
+    }
+    
+    internal static bool UpdateSession(int id, DateOnly date, TimeOnly startTime, TimeOnly endTime)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            var rowsAffected = connection.Execute(
+                "UPDATE sessions SET date = @date, start_time = @startTime, end_time = @endTime  WHERE id = @id", 
+                new { id, date, startTime, endTime}
+            ); 
+            if (rowsAffected > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 
@@ -289,6 +335,9 @@ internal class ChoiceHandler
                 break;
             case "Add Coding Session":
                 sessionController.AddSession();
+                break;
+            case "Update Coding Session":
+                sessionController.UpdateSession();
                 break;
             case "Delete Coding Session":
                 sessionController.DeleteSession();

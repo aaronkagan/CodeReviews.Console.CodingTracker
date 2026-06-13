@@ -162,7 +162,6 @@ internal static class Repository
 
     internal static void SeedData()
     {
-        
         List<CodingSession> entries =
         [
             new (new TimeOnly(09, 00), new TimeOnly(10, 30), new DateOnly(2026, 01, 02)),
@@ -189,7 +188,6 @@ internal static class Repository
             new (new TimeOnly(14, 10), new TimeOnly(15, 40), new DateOnly(2026, 01, 20)),
             new (new TimeOnly(17, 00), new TimeOnly(18, 20), new DateOnly(2026, 01, 21)),
         ];
-        
         
         foreach (var codingSession in entries)
         {
@@ -254,7 +252,6 @@ internal class ChoiceHandler
         }
     }
 }
-
 
 public class DateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
 {

@@ -103,6 +103,11 @@ internal class CodingSessionController
             AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
         }
     }
+
+    internal void ExitProgram()
+    {
+        AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
+    }
 }
 
 internal static class Repository
@@ -248,6 +253,9 @@ internal class ChoiceHandler
                 break;
             case "Seed Data":
                 Repository.SeedData();
+                break;
+            case "Exit Program":
+                sessionController.ExitProgram();
                 break;
         }
     }

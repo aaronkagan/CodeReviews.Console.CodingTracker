@@ -7,7 +7,6 @@ using System.Data;
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 Repository.InitializeDatabase();
-Repository.SeedData();
 string choice = Menu.show();
 ChoiceHandler choiceHandler = new();
 choiceHandler.HandleChoice(choice);
@@ -121,13 +120,12 @@ internal static class Repository
                     end_time TEXT NOT NULL,
                     date TEXT NOT NULL
         );";
-
             connection.Execute(createTableSql);
         }
 
     }
 
-    internal static void InsertSession(CodingSession session)
+    internal static void InsertSession(CodingSession session, string mode="")
     {
         using (var connection = new SqliteConnection(_connectionString))
         {
@@ -136,7 +134,11 @@ internal static class Repository
                 var anonymousSession = new
                     { Date = session.Date, StartTime = session.StartTime, EndTime = session.EndTime };
                 var rowsAffected = connection.Execute(sql, anonymousSession);
-                Console.WriteLine($"{rowsAffected} row(s) inserted.");
+
+                if (mode != "quietly")
+                {
+                    Console.WriteLine($"{rowsAffected} row(s) inserted.");
+                }
             }
         }
     }
@@ -190,17 +192,11 @@ internal static class Repository
         
         using (var connection = new SqliteConnection(_connectionString))
         {
-            bool hasValues = connection.ExecuteScalar<bool>(
-                "SELECT EXISTS(SELECT 1 FROM sessions)"
-            );
-
-            if (!hasValues)
+            foreach (var codingSession in _entries)
             {
-                foreach (var codingSession in _entries)
-                {
-                    InsertSession(codingSession);
-                }
+                InsertSession(codingSession, "quietly");
             }
+            AnsiConsole.MarkupLine("Data Seeded");
         }
     }
 }
@@ -233,6 +229,7 @@ internal class Menu
                     "Add Coding Session", 
                     "Update Coding Session",
                     "Delete Coding Session",
+                    "Seed Data",
                     "Exit Program"
                     ));
         return choice;
@@ -251,6 +248,9 @@ internal class ChoiceHandler
                 break;
             case "View Coding Sessions":
                 sessionController.ViewSessions();
+                break;
+            case "Seed Data":
+                Repository.SeedData();
                 break;
         }
     }

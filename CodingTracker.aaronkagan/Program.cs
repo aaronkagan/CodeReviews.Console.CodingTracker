@@ -140,7 +140,12 @@ internal static class Repository
 
     internal static List<CodingSession> ReadSessions()
     {
-        string sql = "SELECT * FROM sessions";
+        string sql = @"SELECT
+                     id AS ID,
+                     date AS Date,
+                     start_time AS StartTime,
+                     end_time AS EndTime
+                     FROM sessions";
 
         using (var connection = new SqliteConnection(_connectionString))
         {            

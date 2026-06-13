@@ -7,7 +7,7 @@ using System.Data;
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 Repository.InitializeDatabase();
-string choice = Menu.show();
+string choice = Menu.Show();
 ChoiceHandler choiceHandler = new();
 choiceHandler.HandleChoice(choice);
 
@@ -107,11 +107,11 @@ internal class CodingSessionController
 
 internal static class Repository
 {
-    private static readonly string _connectionString = "Data Source=coding-tracker.db";
+    private static readonly string ConnectionString = "Data Source=coding-tracker.db";
 
     internal static void InitializeDatabase()
     {
-        using (var connection = new SqliteConnection(_connectionString))
+        using (var connection = new SqliteConnection(ConnectionString))
         {
             var createTableSql = @"
                     CREATE TABLE IF NOT EXISTS sessions (
@@ -127,12 +127,12 @@ internal static class Repository
 
     internal static void InsertSession(CodingSession session, string mode="")
     {
-        using (var connection = new SqliteConnection(_connectionString))
+        using (var connection = new SqliteConnection(ConnectionString))
         {
             var sql = "INSERT INTO sessions (date, start_time, end_time) VALUES (@Date, @StartTime, @EndTime)";
             {
                 var anonymousSession = new
-                    { Date = session.Date, StartTime = session.StartTime, EndTime = session.EndTime };
+                    { session.Date, session.StartTime, session.EndTime };
                 var rowsAffected = connection.Execute(sql, anonymousSession);
 
                 if (mode != "quietly")
@@ -152,7 +152,7 @@ internal static class Repository
                      end_time AS EndTime
                      FROM sessions";
 
-        using (var connection = new SqliteConnection(_connectionString))
+        using (var connection = new SqliteConnection(ConnectionString))
         {
             var codingSessions = connection.Query<CodingSession>(sql).ToList();
 
@@ -163,7 +163,7 @@ internal static class Repository
     internal static void SeedData()
     {
         
-        List<CodingSession> _entries =
+        List<CodingSession> entries =
         [
             new (new TimeOnly(09, 00), new TimeOnly(10, 30), new DateOnly(2026, 01, 02)),
             new (new TimeOnly(11, 00), new TimeOnly(12, 15), new DateOnly(2026, 01, 03)),
@@ -190,14 +190,13 @@ internal static class Repository
             new (new TimeOnly(17, 00), new TimeOnly(18, 20), new DateOnly(2026, 01, 21)),
         ];
         
-        using (var connection = new SqliteConnection(_connectionString))
+        
+        foreach (var codingSession in entries)
         {
-            foreach (var codingSession in _entries)
-            {
-                InsertSession(codingSession, "quietly");
-            }
-            AnsiConsole.MarkupLine("Data Seeded");
+            InsertSession(codingSession, "quietly");
         }
+        AnsiConsole.MarkupLine("Data Seeded");
+        
     }
 }
 
@@ -218,7 +217,7 @@ internal class CodingSession
 }
 internal class Menu
 {
-    internal static string show()
+    internal static string Show()
     {
         var choice = AnsiConsole.Prompt(
             new SelectionPrompt<string>()

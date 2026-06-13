@@ -244,13 +244,9 @@ internal static class Repository
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
-            var sql = $"SELECT id FROM sessions WHERE id = @Id";		
-            var rowId = connection.ExecuteScalar<int>(sql, new {Id = id});
-            if (rowId != 0)
-            {
-                return true;
-            }
-            return false;
+            var sql = "SELECT EXISTS(SELECT 1 FROM sessions WHERE id = @Id)";
+            bool exists = connection.ExecuteScalar<bool>(sql, new { Id = id });
+            return exists;
         }
     }
     

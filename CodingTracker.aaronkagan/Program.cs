@@ -237,7 +237,7 @@ internal static class Repository
         {
             InsertSession(codingSession, "quietly");
         }
-        AnsiConsole.MarkupLine("Data Seeded");
+        AnsiConsole.MarkupLine("Data Seeded.");
         
     }
 }

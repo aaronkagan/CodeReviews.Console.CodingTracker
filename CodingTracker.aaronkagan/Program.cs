@@ -39,11 +39,11 @@ internal class CodingSessionController
     internal void AddSession()
     {
         DateOnly date = GetDate();
-        TimeOnly startTime;
+        TimeOnly startTime = GetStartTime();
         TimeOnly endTime;
+        
         while (true)
         {
-            startTime = GetStartTime();
             endTime = GetEndTime();
             if (endTime <= startTime)
             {

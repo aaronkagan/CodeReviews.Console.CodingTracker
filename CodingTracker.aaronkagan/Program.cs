@@ -11,9 +11,6 @@ Repository.InitializeDatabase();
 string choice = Menu.Show();
 ChoiceHandler.HandleChoice(choice);
 
-
-
-
 internal static  class Helpers
 {
     internal static DateOnly GetDate()
@@ -31,10 +28,8 @@ internal static  class Helpers
             AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
         }
     }
-    
     internal static int GetId()
     {
-        
         while (true)
         {
             var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row.");
@@ -49,21 +44,18 @@ internal static  class Helpers
             AnsiConsole.MarkupLine("\nError. No row with that Id.");
         }
     }
-    
     internal static TimeOnly GetStartTime()
     {
         AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly startTime = GetTime();
         return startTime;
     }
-
     internal static TimeOnly GetEndTime()
     {
         AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly endTime = GetTime();
         return endTime;
     }
-
     private static TimeOnly GetTime()
     {
         while (true)
@@ -78,15 +70,12 @@ internal static  class Helpers
             AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
         }
     }
-    
     internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
     {
         TimeSpan duration = endTIme - startTime;
         return duration;
     }
 }
-
-
 internal class CodingSessionController
 {
     internal void ViewSessions()
@@ -111,8 +100,6 @@ internal class CodingSessionController
         
         AnsiConsole.Write(table);
     }
-    
-    
     internal void AddSession()
     {
         DateOnly date = Helpers.GetDate();
@@ -136,7 +123,6 @@ internal class CodingSessionController
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
     }
-    
     internal void DeleteSession()
     {
         CodingSessionController sessionController = new();
@@ -153,7 +139,6 @@ internal class CodingSessionController
             }
         }
     }
-
     internal void UpdateSession()
     {
         CodingSessionController sessionController = new();
@@ -174,7 +159,6 @@ internal class CodingSessionController
             }
         }
     }
-    
     internal void ExitProgram()
     {
         AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
@@ -184,7 +168,6 @@ internal class CodingSessionController
 internal static class Repository
 {
     private static readonly string ConnectionString = "Data Source=coding-tracker.db";
-
     internal static void InitializeDatabase()
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -199,9 +182,7 @@ internal static class Repository
         );";
             connection.Execute(createTableSql);
         }
-
     }
-
     internal static void InsertSession(CodingSession session, string mode="")
     {
         using (var connection = new SqliteConnection(ConnectionString))
@@ -233,7 +214,6 @@ internal static class Repository
         using (var connection = new SqliteConnection(ConnectionString))
         {
             var codingSessions = connection.Query<CodingSession>(sql).ToList();
-
             return codingSessions;
         }
     }
@@ -248,9 +228,7 @@ internal static class Repository
             {
                 return true;
             }
-
             return false;
-
         }
     }
 
@@ -355,7 +333,6 @@ internal static class Menu
         return choice;
     }
 }
-
 internal static class ChoiceHandler
 {
     internal static void HandleChoice(string choice)
@@ -384,7 +361,6 @@ internal static class ChoiceHandler
         }
     }
 }
-
 public class DateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
 {
     public override void SetValue(IDbDataParameter parameter, DateOnly value)

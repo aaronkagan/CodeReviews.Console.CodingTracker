@@ -59,6 +59,24 @@ internal class CodingSessionController
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
     }
+
+    private int GetId()
+    {
+        
+        while (true)
+        {
+            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row.");
+            if (!Int32.TryParse(userInput, out int id))
+            {
+                AnsiConsole.MarkupLine("Invalid input. Please enter number.");
+            }  
+            if (Repository.CheckIfId(id))
+            {   
+                 return id;
+            }
+            AnsiConsole.MarkupLine("\nError. No row with that Id.");
+        }
+    }
     
     private TimeOnly GetStartTime()
     {
@@ -110,20 +128,14 @@ internal class CodingSessionController
         sessionController.ViewSessions();
         while (true)
         {
-            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row you want to delete.");
-            if (Int32.TryParse(userInput, out int rowToDelete))
+            int id = sessionController.GetId();
+            bool deleted = Repository.DeleteSession(id);
+            if (deleted)
             {
-                bool deleted = Repository.DeleteSession(rowToDelete);
-                if (deleted)
-                {
-                    Console.Clear();
-                    AnsiConsole.MarkupLine($"\n\nDelete Successful!");
-                    break;
-                }
-                AnsiConsole.MarkupLine("\nError. No row with that Id.");
+                Console.Clear();
+                AnsiConsole.MarkupLine($"\n\nDelete Successful!");
                 break;
             }
-            AnsiConsole.MarkupLine("Invalid input. Please enter number.");
         }
     }
 
@@ -134,24 +146,18 @@ internal class CodingSessionController
         sessionController.ViewSessions();
         while (true)
         {
-            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row you want to update.");
+            var id = sessionController.GetId();
             var date = sessionController.GetDate();
             var startTime = sessionController.GetStartTime();
             var endTime = sessionController.GetEndTime();
             
-            if (Int32.TryParse(userInput, out int id))
-            {
-                bool updated = Repository.UpdateSession(id, date, startTime, endTime);
-                if (updated)
-                {
-                    Console.Clear();
-                    AnsiConsole.MarkupLine($"\n\nUpdate Successful!");
-                    break;
-                }
-                AnsiConsole.MarkupLine("\nError. No row with that Id.");
+            bool updated = Repository.UpdateSession(id, date, startTime, endTime);
+            if (updated)
+            { 
+                Console.Clear();
+                AnsiConsole.MarkupLine($"\n\nUpdate Successful!");
                 break;
             }
-            AnsiConsole.MarkupLine("Invalid input. Please enter number.");
         }
     }
 
@@ -231,6 +237,20 @@ internal static class Repository
 
             return false;
 
+        }
+    }
+
+    internal static bool CheckIfId(int id)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            var sql = $"SELECT id FROM sessions WHERE id = @Id";		
+            var rowId = connection.ExecuteScalar<int>(sql, new {Id = id});
+            if (rowId != 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
     

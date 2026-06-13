@@ -104,6 +104,29 @@ internal class CodingSessionController
         }
     }
 
+    internal void DeleteSession()
+    {
+        CodingSessionController sessionController = new();
+        sessionController.ViewSessions();
+        while (true)
+        {
+            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row you want to delete.");
+            if (Int32.TryParse(userInput, out int rowToDelete))
+            {
+                bool deleted = Repository.DeleteSession(rowToDelete);
+                if (deleted)
+                {
+                    Console.Clear();
+                    AnsiConsole.MarkupLine($"\n\nDelete Successful!");
+                    break;
+                }
+                AnsiConsole.MarkupLine("\nError. No row with that Id.");
+                break;
+            }
+            AnsiConsole.MarkupLine("Invalid input. Please enter number.");
+        }
+    }
+
     internal void ExitProgram()
     {
         AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
@@ -162,6 +185,22 @@ internal static class Repository
             var codingSessions = connection.Query<CodingSession>(sql).ToList();
 
             return codingSessions;
+        }
+    }
+    
+    internal static bool DeleteSession(int id)
+    {
+        using (var connection = new SqliteConnection(ConnectionString))
+        {
+            var sql = $"DELETE FROM sessions WHERE id = @Id";		
+            var rowsAffected = connection.Execute(sql, new {Id = id});
+            if (rowsAffected > 0)
+            {
+                return true;
+            }
+
+            return false;
+
         }
     }
 
@@ -245,11 +284,14 @@ internal class ChoiceHandler
         CodingSessionController sessionController = new();
         switch (choice)
         {
+            case "View Coding Sessions":
+                sessionController.ViewSessions();
+                break;
             case "Add Coding Session":
                 sessionController.AddSession();
                 break;
-            case "View Coding Sessions":
-                sessionController.ViewSessions();
+            case "Delete Coding Session":
+                sessionController.DeleteSession();
                 break;
             case "Seed Data":
                 Repository.SeedData();

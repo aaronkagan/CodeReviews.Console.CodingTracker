@@ -6,10 +6,12 @@ using System.Data;
 
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
 Repository.InitializeDatabase();
 string choice = Menu.Show();
 ChoiceHandler choiceHandler = new();
 choiceHandler.HandleChoice(choice);
+
 
 
 internal class CodingSessionController
@@ -26,15 +28,17 @@ internal class CodingSessionController
         table.AddColumn("ID");
         table.AddColumn("Date", col => col.Centered());
         table.AddColumn("Start Time", col => col.Centered());
-        table.AddColumn("End Time", col => col.RightAligned());
+        table.AddColumn("End Time", col => col.Centered());
+        table.AddColumn("Duration", col => col.RightAligned());
         
         foreach (var codingSession in codingSessions)
         {
-            table.AddRow(codingSession.Id.ToString(), codingSession.Date.ToString(), codingSession.StartTime.ToString(), codingSession.EndTime.ToString());
+            table.AddRow(codingSession.Id.ToString(), codingSession.Date.ToString(), codingSession.StartTime.ToString(), codingSession.EndTime.ToString(), codingSession.Duration.ToString());
         }
         
         AnsiConsole.Write(table);
     }
+    
     
     internal void AddSession()
     {
@@ -161,6 +165,12 @@ internal class CodingSessionController
         }
     }
 
+    internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
+    {
+        TimeSpan duration = endTIme - startTime;
+        return duration;
+    }
+
     internal void ExitProgram()
     {
         AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
@@ -180,6 +190,7 @@ internal static class Repository
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     start_time TEXT NOT NULL,
                     end_time TEXT NOT NULL,
+                    duration TEXT NOT NULL,
                     date TEXT NOT NULL
         );";
             connection.Execute(createTableSql);
@@ -191,10 +202,9 @@ internal static class Repository
     {
         using (var connection = new SqliteConnection(ConnectionString))
         {
-            var sql = "INSERT INTO sessions (date, start_time, end_time) VALUES (@Date, @StartTime, @EndTime)";
+            var sql = "INSERT INTO sessions (date, start_time, end_time, duration) VALUES (@Date, @StartTime, @EndTime, @Duration)";
             {
-                var anonymousSession = new
-                    { session.Date, session.StartTime, session.EndTime };
+                var anonymousSession = new { session.Date, session.StartTime, session.EndTime, session.Duration};
                 var rowsAffected = connection.Execute(sql, anonymousSession);
 
                 if (mode != "quietly")
@@ -204,8 +214,7 @@ internal static class Repository
             }
         }
     }
-
-   
+    
 
     internal static List<CodingSession> ReadSessions()
     {
@@ -213,7 +222,8 @@ internal static class Repository
                      id AS ID,
                      date AS Date,
                      start_time AS StartTime,
-                     end_time AS EndTime
+                     end_time AS EndTime,
+                     duration As Duration
                      FROM sessions";
 
         using (var connection = new SqliteConnection(ConnectionString))
@@ -252,11 +262,12 @@ internal static class Repository
     
     internal static bool UpdateSession(int id, DateOnly date, TimeOnly startTime, TimeOnly endTime)
     {
+        TimeSpan duration = CodingSessionController.CalculateDuration(startTime, endTime);
         using (var connection = new SqliteConnection(ConnectionString))
         {
             var rowsAffected = connection.Execute(
-                "UPDATE sessions SET date = @date, start_time = @startTime, end_time = @endTime  WHERE id = @id", 
-                new { id, date, startTime, endTime}
+                "UPDATE sessions SET date = @date, start_time = @startTime, end_time = @endTime, duration = @duration  WHERE id = @id", 
+                new { id, date, startTime, endTime, duration}
             ); 
             if (rowsAffected > 0)
             {
@@ -310,6 +321,7 @@ internal class CodingSession
     public TimeOnly StartTime { get; init; }
     public TimeOnly EndTime { get; init; }
     public DateOnly Date { get; init; }
+    public TimeSpan Duration { get; init; }
     // Empty constructor for use by Dapper Reflection.
     internal CodingSession() { } 
     internal CodingSession(TimeOnly startTime, TimeOnly endtime, DateOnly date)
@@ -317,6 +329,7 @@ internal class CodingSession
         StartTime = startTime;
         EndTime = endtime;
         Date = date;
+        Duration = CodingSessionController.CalculateDuration(startTime, endtime);
     }
 }
 internal class Menu
@@ -390,5 +403,17 @@ public class TimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
     public override TimeOnly Parse(object value)
     {
         return TimeOnly.Parse(value.ToString()!);
+    }
+}
+public class TimeSpanTypeHandler : SqlMapper.TypeHandler<TimeSpan>
+{
+    public override void SetValue(IDbDataParameter parameter, TimeSpan value)
+    {
+        parameter.Value = value.ToString("HH:mm:ss");
+    }
+
+    public override TimeSpan Parse(object value)
+    {
+        return TimeSpan.Parse(value.ToString()!);
     }
 }

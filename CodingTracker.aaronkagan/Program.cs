@@ -72,7 +72,7 @@ internal static  class Helpers
     }
     internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
     {
-        TimeSpan duration = endTIme - startTime;
+        TimeSpan duration = TimeSpan.Parse((endTIme - startTime).ToString(@"hh\:mm\:ss"));
         return duration;
     }
 }
@@ -120,6 +120,20 @@ internal class CodingSessionController
             }
         }
        
+        CodingSession session = new(startTime, endTime, date);
+        Repository.InsertSession(session);
+    }
+    internal void StartSession()
+    {
+        DateOnly date = DateOnly.FromDateTime(DateTime.Today);
+        TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
+        AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session.");
+        while (!Console.KeyAvailable)
+        {
+            
+        }
+        TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
+        AnsiConsole.MarkupLine($"Session Ended at {endTime}. Saving session...");
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
     }
@@ -342,6 +356,9 @@ internal static class ChoiceHandler
         {
             case "View Coding Sessions":
                 sessionController.ViewSessions();
+                break;
+            case "Start Coding Session":
+                sessionController.StartSession();
                 break;
             case "Add Coding Session":
                 sessionController.AddSession();

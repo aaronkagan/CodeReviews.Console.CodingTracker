@@ -113,13 +113,13 @@ internal class CodingSessionController
         Console.Clear();
         var banner = new FigletText("Coding Tracker")
         {
-            Color = Color.Green,
+            Color = Color.Blue,
             Justification = Justify.Center
         };
   
-        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("green")));
+        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("blue")));
         AnsiConsole.Write(banner);
-        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("green")));
+        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("blue")));
         
         string choice = Menu.Show();
         ChoiceHandler.HandleChoice(choice);
@@ -165,7 +165,7 @@ internal class CodingSessionController
         while (!Console.KeyAvailable)
         {
             Console.Clear();
-            AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session");
+            AnsiConsole.MarkupLine($"\nSession Started at {startTime}. Press any key to end the session\n");
             var figlet = new FigletText((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"))
             {
                 Color = Color.Green,

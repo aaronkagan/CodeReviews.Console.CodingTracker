@@ -136,7 +136,19 @@ internal class CodingSessionController
         {
             Console.Clear();
             AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session");
-            AnsiConsole.MarkupLine((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"));
+            // AnsiConsole.MarkupLine((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"));
+            var figlet = new FigletText((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"))
+            {
+                Color = Color.Green,
+                Justification = Justify.Center,
+            };
+            var panel = new Panel(figlet)
+            {
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Green),
+                Padding = new Padding(1, 1, 1, 1)
+            };
+            AnsiConsole.Write(panel);
             Thread.Sleep(1000); 
         }
         

@@ -24,7 +24,7 @@ internal static  class Helpers
                 while (!ctx.IsFinished)
                 {
                     task.Increment(1);
-                    Thread.Sleep(25);
+                    Thread.Sleep(17);
                 }
             });
     }
@@ -32,12 +32,16 @@ internal static  class Helpers
     {
         while (true)
         {
-            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD): ");
+            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD) or type T then ENTER to use today's date:");
+            
             string format = "yyyy-MM-dd";
+            if (input.ToLower() == "t")
+            {
+                input = DateOnly.FromDateTime(DateTime.Now).ToString(format);
+            }
             if (DateOnly.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out DateOnly targetDate))
             {
-                AnsiConsole.MarkupLine($"You entered: {targetDate}");
                 return targetDate;
             }
             AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
@@ -79,7 +83,6 @@ internal static  class Helpers
             string timeFormat = "HH:mm";
             if (TimeOnly.TryParseExact(input, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly targetTime))
             {
-                AnsiConsole.MarkupLine($"Time entered: {targetTime}");
                 return targetTime;
             }
             AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
@@ -93,7 +96,7 @@ internal static  class Helpers
 
     internal static void ReturnToMainMenu()
     {
-        AnsiConsole.MarkupLine("Press any key to return to the main menu");
+        AnsiConsole.MarkupLine("\n\nPress any key to return to the main menu");
         Console.ReadKey();
         Console.Clear();
         
@@ -197,6 +200,8 @@ internal class CodingSessionController
         }
        
         CodingSession session = new(startTime, endTime, date);
+        
+        Console.Clear();
         Helpers.AddProgress("Adding session...");
         
         Repository.InsertSession(session);

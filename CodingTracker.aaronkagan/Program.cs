@@ -75,6 +75,16 @@ internal static  class Helpers
         TimeSpan duration = TimeSpan.Parse((endTIme - startTime).ToString(@"hh\:mm\:ss"));
         return duration;
     }
+
+    internal static void ReturnToMainMenu()
+    {
+        AnsiConsole.MarkupLine("Press any key to return to the main menu");
+        Console.ReadKey();
+        Console.Clear();
+        
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
+    }
 }
 internal class CodingSessionController
 {
@@ -108,8 +118,7 @@ internal class CodingSessionController
         
         AnsiConsole.Write(table);
         
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
+        Helpers.ReturnToMainMenu();
     }
     internal void AddSession()
     {
@@ -134,8 +143,8 @@ internal class CodingSessionController
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
         
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
+        Helpers.ReturnToMainMenu();
+
     }
     internal void StartSession()
     {
@@ -166,8 +175,8 @@ internal class CodingSessionController
                 break;
             }
         }
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
+        
+        Helpers.ReturnToMainMenu();
     }
     internal void UpdateSession()
     {
@@ -188,8 +197,8 @@ internal class CodingSessionController
                 break;
             }
         }
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
+        
+        Helpers.ReturnToMainMenu();
     }
     internal void ExitProgram()
     {

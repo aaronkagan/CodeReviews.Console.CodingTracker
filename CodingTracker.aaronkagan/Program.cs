@@ -3,6 +3,7 @@ using Spectre.Console;
 using System.Globalization;
 using Dapper;
 using System.Data;
+using Rule = Spectre.Console.Rule;
 
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
@@ -109,13 +110,24 @@ internal class CodingSessionController
     internal void Start()
     {
         Repository.InitializeDatabase();
-        AnsiConsole.MarkupLine("Welcome to the Coding Session Tracker");
+
+        var banner = new FigletText("Coding Tracker")
+        {
+            Color = Color.Green,
+            Justification = Justify.Center
+        };
+  
+        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("green")));
+        AnsiConsole.Write(banner);
+        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("green")));
+        
         string choice = Menu.Show();
         ChoiceHandler.HandleChoice(choice);
     }
 
     internal void ViewSessions(bool returnToMenu=false)
     {
+        Console.Clear();
         List<CodingSession> codingSessions = Repository.ReadSessions();
         
         var table = new Table()
@@ -166,7 +178,8 @@ internal class CodingSessionController
                 Padding = new Padding(1, 1, 1, 1)
             };
             AnsiConsole.Write(panel);
-            Thread.Sleep(1000); 
+            
+          
         }
         
         TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
@@ -250,7 +263,14 @@ internal class CodingSessionController
     }
     internal void ExitProgram()
     {
-        AnsiConsole.MarkupLine("Exiting Program. Goodbye!");
+        Console.Clear();
+        var banner = new FigletText("Exiting Program. Goodbye!")
+        {
+            Color = Color.Red,
+            Justification = Justify.Center
+        };
+        
+        AnsiConsole.Write(banner);
     }
 }
 

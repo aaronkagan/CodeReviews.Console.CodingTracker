@@ -167,17 +167,12 @@ internal class CodingSessionController
     {
         CodingSessionController sessionController = new();
         sessionController.ViewSessions(false);
-        while (true)
-        {
-            int id = Helpers.GetId();
-            bool deleted = Repository.DeleteSession(id);
-            if (deleted)
-            {
-                Console.Clear();
-                AnsiConsole.MarkupLine($"\n\nDelete Successful!");
-                break;
-            }
-        }
+        
+        int id = Helpers.GetId();
+        Repository.DeleteSession(id);
+        Console.Clear();
+        AnsiConsole.MarkupLine($"\n\nDelete Successful!");
+        
         
         Helpers.ReturnToMainMenu();
     }

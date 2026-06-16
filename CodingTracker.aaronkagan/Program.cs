@@ -13,6 +13,21 @@ sessionController.Start();
 
 internal static  class Helpers
 {
+
+    internal static void AddProgress(string message)
+    {
+        AnsiConsole.Progress()
+            .Start(ctx =>
+            {
+                var task = ctx.AddTask(message, maxValue: 100);
+  
+                while (!ctx.IsFinished)
+                {
+                    task.Increment(1);
+                    Thread.Sleep(25);
+                }
+            });
+    }
     internal static DateOnly GetDate()
     {
         while (true)
@@ -153,8 +168,10 @@ internal class CodingSessionController
         }
         
         TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
-        AnsiConsole.MarkupLine($"Session Ended at {endTime}. Saving session...");
+        Console.Clear();
+        AnsiConsole.MarkupLine($"Session ended at {endTime}.");
         CodingSession session = new(startTime, endTime, date);
+        Helpers.AddProgress("Saving Sesssion.");
         Repository.InsertSession(session);
 
         Console.ReadKey();

@@ -111,15 +111,17 @@ internal class CodingSessionController
     {
         Repository.InitializeDatabase();
         Console.Clear();
-        var banner = new FigletText("Coding Tracker")
+        Console.WriteLine("\n\n");
+        
+        var blockFont = FigletFont.Load("block.flf");
+
+        var banner = new FigletText(blockFont,"CODING TRACKER")
         {
-            Color = Color.Blue,
+            Color = Color.Teal,
             Justification = Justify.Center
         };
   
-        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("blue")));
         AnsiConsole.Write(banner);
-        AnsiConsole.Write(new Rule().RuleStyle(Style.Parse("blue")));
         
         string choice = Menu.Show();
         ChoiceHandler.HandleChoice(choice);
@@ -432,18 +434,21 @@ internal static class Menu
 {
     internal static string Show()
     {
-        var choice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("\n\nPlease choose an option:")
-                .AddChoices(
-                    "View Coding Sessions",
-                    "Start Coding Session",
-                    "Add Coding Session", 
-                    "Update Coding Session",
-                    "Delete Coding Session",
-                    "Seed Data",
-                    "Exit Program"
-                    ));
+        
+        var prompt = new SelectionPrompt<string>()
+            .Title("\nChoose an option:")
+            .HighlightStyle(new Style(foreground: Color.Pink1))
+            .AddChoices(
+                "View Coding Sessions",
+                "Start Coding Session",
+                "Add Coding Session",
+                "Update Coding Session",
+                "Delete Coding Session",
+                "Seed Data",
+                "Exit Program"
+            );
+        
+        var choice = AnsiConsole.Prompt(prompt);
         return choice;
     }
 }

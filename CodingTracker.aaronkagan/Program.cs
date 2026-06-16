@@ -178,6 +178,7 @@ internal class CodingSessionController
                 Padding = new Padding(1, 1, 1, 1)
             };
             AnsiConsole.Write(panel);
+            Thread.Sleep(1000);
             
           
         }

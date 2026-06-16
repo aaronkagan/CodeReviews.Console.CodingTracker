@@ -124,6 +124,30 @@ internal class CodingSessionController
             Helpers.ReturnToMainMenu();
         }
     }
+    internal void StartSession()
+    {
+        Console.Clear();
+        DateOnly date = DateOnly.FromDateTime(DateTime.Today);
+        TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
+        AnsiConsole.MarkupLine($"Session Started at {startTime}.");
+
+        
+        while (!Console.KeyAvailable)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session");
+            AnsiConsole.MarkupLine((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"));
+            Thread.Sleep(1000); 
+        }
+        
+        TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
+        AnsiConsole.MarkupLine($"Session Ended at {endTime}. Saving session...");
+        CodingSession session = new(startTime, endTime, date);
+        Repository.InsertSession(session);
+
+        Console.ReadKey();
+        Helpers.ReturnToMainMenu();
+    }
     internal void AddSession()
     {
         DateOnly date = Helpers.GetDate();
@@ -150,19 +174,7 @@ internal class CodingSessionController
         Helpers.ReturnToMainMenu();
 
     }
-    internal void StartSession()
-    {
-        DateOnly date = DateOnly.FromDateTime(DateTime.Today);
-        TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
-        AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session.");
-        Console.ReadKey();
-        TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
-        AnsiConsole.MarkupLine($"Session Ended at {endTime}. Saving session...");
-        CodingSession session = new(startTime, endTime, date);
-        Repository.InsertSession(session);
-        
-        Helpers.ReturnToMainMenu();
-    }
+ 
     internal void DeleteSession()
     {
         CodingSessionController sessionController = new();

@@ -7,9 +7,9 @@ using System.Data;
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
-Repository.InitializeDatabase();
-string choice = Menu.Show();
-ChoiceHandler.HandleChoice(choice);
+
+CodingSessionController sessionController = new();
+sessionController.Start();
 
 internal static  class Helpers
 {
@@ -78,6 +78,14 @@ internal static  class Helpers
 }
 internal class CodingSessionController
 {
+    internal void Start()
+    {
+        Repository.InitializeDatabase();
+        AnsiConsole.MarkupLine("Welcome to the Coding Session Tracker");
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
+    }
+
     internal void ViewSessions()
     {
         List<CodingSession> codingSessions = Repository.ReadSessions();
@@ -99,6 +107,9 @@ internal class CodingSessionController
         }
         
         AnsiConsole.Write(table);
+        
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
     }
     internal void AddSession()
     {
@@ -122,20 +133,23 @@ internal class CodingSessionController
        
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
+        
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
     }
     internal void StartSession()
     {
         DateOnly date = DateOnly.FromDateTime(DateTime.Today);
         TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
         AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session.");
-        while (!Console.KeyAvailable)
-        {
-            
-        }
+        Console.ReadKey();
         TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
         AnsiConsole.MarkupLine($"Session Ended at {endTime}. Saving session...");
         CodingSession session = new(startTime, endTime, date);
         Repository.InsertSession(session);
+        
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
     }
     internal void DeleteSession()
     {
@@ -152,6 +166,8 @@ internal class CodingSessionController
                 break;
             }
         }
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
     }
     internal void UpdateSession()
     {
@@ -172,6 +188,8 @@ internal class CodingSessionController
                 break;
             }
         }
+        string choice = Menu.Show();
+        ChoiceHandler.HandleChoice(choice);
     }
     internal void ExitProgram()
     {

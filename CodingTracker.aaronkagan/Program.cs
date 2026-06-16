@@ -151,7 +151,6 @@ internal class CodingSessionController
         {
             Console.Clear();
             AnsiConsole.MarkupLine($"Session Started at {startTime}. Press any key to end the session");
-            // AnsiConsole.MarkupLine((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"));
             var figlet = new FigletText((TimeOnly.FromDateTime(DateTime.Now) - startTime).ToString(@"hh\:mm\:ss"))
             {
                 Color = Color.Green,
@@ -171,7 +170,7 @@ internal class CodingSessionController
         Console.Clear();
         AnsiConsole.MarkupLine($"Session ended at {endTime}.");
         CodingSession session = new(startTime, endTime, date);
-        Helpers.AddProgress("Saving Sesssion.");
+        Helpers.AddProgress("Saving session...");
         Repository.InsertSession(session);
 
         Console.ReadKey();
@@ -198,6 +197,8 @@ internal class CodingSessionController
         }
        
         CodingSession session = new(startTime, endTime, date);
+        Helpers.AddProgress("Adding session...");
+        
         Repository.InsertSession(session);
         
         Helpers.ReturnToMainMenu();
@@ -210,8 +211,10 @@ internal class CodingSessionController
         sessionController.ViewSessions(false);
         
         int id = Helpers.GetId();
+        
         Repository.DeleteSession(id);
         Console.Clear();
+        Helpers.AddProgress("Deleting session...");
         AnsiConsole.MarkupLine($"\n\nDelete Successful!");
         
         
@@ -232,6 +235,7 @@ internal class CodingSessionController
             if (updated)
             { 
                 Console.Clear();
+                Helpers.AddProgress("Updating session...");
                 AnsiConsole.MarkupLine($"\n\nUpdate Successful!");
                 break;
             }
@@ -373,6 +377,7 @@ internal static class Repository
             InsertSession(codingSession, "quietly");
         }
         Console.Clear();
+        Helpers.AddProgress("Seeding data...");
         AnsiConsole.MarkupLine("Data Seeded.");
         
         Helpers.ReturnToMainMenu();

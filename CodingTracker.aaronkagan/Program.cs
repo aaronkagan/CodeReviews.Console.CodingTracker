@@ -110,7 +110,7 @@ internal class CodingSessionController
     internal void Start()
     {
         Repository.InitializeDatabase();
-
+        Console.Clear();
         var banner = new FigletText("Coding Tracker")
         {
             Color = Color.Green,

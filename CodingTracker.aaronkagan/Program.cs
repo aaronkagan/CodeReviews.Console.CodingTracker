@@ -145,11 +145,10 @@ internal class CodingSessionController
         
         foreach (var codingSession in codingSessions)
         {
-            table.AddRow(codingSession.Id.ToString(), codingSession.Date.ToString(), codingSession.StartTime.ToString(), codingSession.EndTime.ToString(), codingSession.Duration.ToString());
+            table.AddRow(codingSession.Id.ToString(), codingSession.Date.ToString("D"), codingSession.StartTime.ToString(), codingSession.EndTime.ToString(), codingSession.Duration.ToString());
         }
         
         AnsiConsole.Write(table);
-        
         
         if (returnToMenu)
         {

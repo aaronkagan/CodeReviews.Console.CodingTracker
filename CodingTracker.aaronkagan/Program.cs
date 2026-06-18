@@ -14,7 +14,6 @@ sessionController.Start();
 
 internal static  class Helpers
 {
-
     internal static void AddProgress(string message)
     {
         AnsiConsole.Progress()
@@ -94,16 +93,6 @@ internal static  class Helpers
         TimeSpan duration = TimeSpan.Parse((endTIme - startTime).ToString(@"hh\:mm\:ss"));
         return duration;
     }
-
-    internal static void ReturnToMainMenu()
-    {
-        AnsiConsole.MarkupLine("\nPress any key to return to the main menu");
-        Console.ReadKey();
-        Console.Clear();
-        
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
-    }
 }
 internal class CodingSessionController
 {
@@ -122,12 +111,14 @@ internal class CodingSessionController
         };
   
         AnsiConsole.Write(banner);
-        
+
+       
         string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice);
+        ChoiceHandler.HandleChoice(choice); 
+        
     }
 
-    internal void ViewSessions(bool returnToMenu=false)
+    internal void ViewSessions()
     {
         Console.Clear();
         List<CodingSession> codingSessions = Repository.ReadSessions();
@@ -150,10 +141,7 @@ internal class CodingSessionController
         
         AnsiConsole.Write(table);
         
-        if (returnToMenu)
-        {
-            Helpers.ReturnToMainMenu();
-        }
+      
     }
     internal void StartSession()
     {
@@ -180,8 +168,6 @@ internal class CodingSessionController
             };
             AnsiConsole.Write(panel);
             Thread.Sleep(1000);
-            
-          
         }
         
         TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
@@ -192,10 +178,10 @@ internal class CodingSessionController
         Repository.InsertSession(session);
 
         Console.ReadKey();
-        Helpers.ReturnToMainMenu();
     }
     internal void AddSession()
     {
+        
         DateOnly date = Helpers.GetDate();
         TimeOnly startTime = Helpers.GetStartTime();
         TimeOnly endTime;
@@ -221,14 +207,13 @@ internal class CodingSessionController
         
         Repository.InsertSession(session);
         
-        Helpers.ReturnToMainMenu();
 
     }
  
     internal void DeleteSession()
     {
         CodingSessionController sessionController = new();
-        sessionController.ViewSessions(false);
+        sessionController.ViewSessions();
         
         int id = Helpers.GetId();
         
@@ -238,7 +223,6 @@ internal class CodingSessionController
         AnsiConsole.MarkupLine($"\nDelete Successful!");
         
         
-        Helpers.ReturnToMainMenu();
     }
     internal void UpdateSession()
     {
@@ -261,7 +245,6 @@ internal class CodingSessionController
             }
         }
         
-        Helpers.ReturnToMainMenu();
     }
     internal void ExitProgram()
     {
@@ -406,9 +389,6 @@ internal static class Repository
         Console.Clear();
         Helpers.AddProgress("\nSeeding data...");
         AnsiConsole.MarkupLine("\nData Seeded.");
-        
-        Helpers.ReturnToMainMenu();
-        
     }
 }
 
@@ -459,7 +439,7 @@ internal static class ChoiceHandler
         switch (choice)
         {
             case "View Coding Sessions":
-                sessionController.ViewSessions(true);
+                sessionController.ViewSessions();
                 break;
             case "Start Coding Session":
                 sessionController.StartSession();

@@ -33,7 +33,7 @@ internal static  class Helpers
     {
         while (true)
         {
-            string input = AnsiConsole.Ask<string>("Enter a date (YYYY-MM-DD) or type T then ENTER to use today's date:");
+            string input = AnsiConsole.Ask<string>("\nEnter a date (YYYY-MM-DD) or type T then ENTER to use today's date:");
             
             string format = "yyyy-MM-dd";
             if (input.ToLower() == "t")
@@ -45,17 +45,17 @@ internal static  class Helpers
             {
                 return targetDate;
             }
-            AnsiConsole.MarkupLine("Invalid date format. Please try again using YYYY-MM-DD.");
+            AnsiConsole.MarkupLine("\nInvalid date format. Please try again using YYYY-MM-DD.");
         }
     }
     internal static int GetId()
     {
         while (true)
         {
-            var userInput = AnsiConsole.Ask<string>("Please Enter the ID of the row.");
+            var userInput = AnsiConsole.Ask<string>("\nPlease Enter the ID of the row.");
             if (!Int32.TryParse(userInput, out int id))
             {
-                AnsiConsole.MarkupLine("Invalid input. Please enter number.");
+                AnsiConsole.MarkupLine("\nInvalid input. Please enter number.");
             }  
             if (Repository.CheckIfId(id))
             {   
@@ -66,13 +66,13 @@ internal static  class Helpers
     }
     internal static TimeOnly GetStartTime()
     {
-        AnsiConsole.MarkupLine("Enter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
+        AnsiConsole.MarkupLine("\nEnter a START time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly startTime = GetTime();
         return startTime;
     }
     internal static TimeOnly GetEndTime()
     {
-        AnsiConsole.MarkupLine("Enter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
+        AnsiConsole.MarkupLine("\nEnter an END time in 24 hour format (HH:mm, e.g., 14:30): ");
         TimeOnly endTime = GetTime();
         return endTime;
     }
@@ -86,7 +86,7 @@ internal static  class Helpers
             {
                 return targetTime;
             }
-            AnsiConsole.MarkupLine("Invalid time format. Please use the 24-hour HH:mm format.");
+            AnsiConsole.MarkupLine("\nInvalid time format. Please use the 24-hour HH:mm format.");
         }
     }
     internal static TimeSpan CalculateDuration(TimeOnly startTime, TimeOnly endTIme)
@@ -97,7 +97,7 @@ internal static  class Helpers
 
     internal static void ReturnToMainMenu()
     {
-        AnsiConsole.MarkupLine("\n\nPress any key to return to the main menu");
+        AnsiConsole.MarkupLine("\nPress any key to return to the main menu");
         Console.ReadKey();
         Console.Clear();
         
@@ -161,7 +161,7 @@ internal class CodingSessionController
         Console.Clear();
         DateOnly date = DateOnly.FromDateTime(DateTime.Today);
         TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
-        AnsiConsole.MarkupLine($"Session Started at {startTime}.");
+        AnsiConsole.MarkupLine($"\nSession Started at {startTime}.");
 
         
         while (!Console.KeyAvailable)
@@ -187,9 +187,9 @@ internal class CodingSessionController
         
         TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
         Console.Clear();
-        AnsiConsole.MarkupLine($"Session ended at {endTime}.");
+        AnsiConsole.MarkupLine($"\nSession ended at {endTime}.");
         CodingSession session = new(startTime, endTime, date);
-        Helpers.AddProgress("Saving session...");
+        Helpers.AddProgress("\nSaving session...");
         Repository.InsertSession(session);
 
         Console.ReadKey();
@@ -206,8 +206,8 @@ internal class CodingSessionController
             endTime = Helpers.GetEndTime();
             if (endTime <= startTime)
             {
-                AnsiConsole.MarkupLine("You cannot extend your coding session to the next day");
-                AnsiConsole.MarkupLine("Please end your session at 23:59 and create a new session for the next day starting at 00:00.");
+                AnsiConsole.MarkupLine("\nYou cannot extend your coding session to the next day");
+                AnsiConsole.MarkupLine("\nPlease end your session at 23:59 and create a new session for the next day starting at 00:00.");
             }
             else
             {
@@ -218,7 +218,7 @@ internal class CodingSessionController
         CodingSession session = new(startTime, endTime, date);
         
         Console.Clear();
-        Helpers.AddProgress("Adding session...");
+        Helpers.AddProgress("\nAdding session...");
         
         Repository.InsertSession(session);
         
@@ -235,8 +235,8 @@ internal class CodingSessionController
         
         Repository.DeleteSession(id);
         Console.Clear();
-        Helpers.AddProgress("Deleting session...");
-        AnsiConsole.MarkupLine($"\n\nDelete Successful!");
+        Helpers.AddProgress("\nDeleting session...");
+        AnsiConsole.MarkupLine($"\nDelete Successful!");
         
         
         Helpers.ReturnToMainMenu();
@@ -256,8 +256,8 @@ internal class CodingSessionController
             if (updated)
             { 
                 Console.Clear();
-                Helpers.AddProgress("Updating session...");
-                AnsiConsole.MarkupLine($"\n\nUpdate Successful!");
+                Helpers.AddProgress("\nUpdating session...");
+                AnsiConsole.MarkupLine($"\nUpdate Successful!");
                 break;
             }
         }
@@ -267,7 +267,7 @@ internal class CodingSessionController
     internal void ExitProgram()
     {
         Console.Clear();
-        var banner = new FigletText("Exiting Program. Goodbye!")
+        var banner = new FigletText("\nExiting Program. Goodbye!")
         {
             Color = Color.Red,
             Justification = Justify.Center
@@ -306,7 +306,7 @@ internal static class Repository
 
                 if (mode != "quietly")
                 {
-                    Console.WriteLine($"{rowsAffected} row(s) inserted.");
+                    Console.WriteLine($"\n{rowsAffected} row(s) inserted.");
                 }
             }
         }
@@ -405,8 +405,8 @@ internal static class Repository
             InsertSession(codingSession, "quietly");
         }
         Console.Clear();
-        Helpers.AddProgress("Seeding data...");
-        AnsiConsole.MarkupLine("Data Seeded.");
+        Helpers.AddProgress("\nSeeding data...");
+        AnsiConsole.MarkupLine("\nData Seeded.");
         
         Helpers.ReturnToMainMenu();
         

@@ -112,9 +112,11 @@ internal class CodingSessionController
   
         AnsiConsole.Write(banner);
 
-       
-        string choice = Menu.Show();
-        ChoiceHandler.HandleChoice(choice); 
+        while (true)
+        {
+            string choice = Menu.Show();
+            ChoiceHandler.HandleChoice(choice); 
+        }
         
     }
 
@@ -141,7 +143,9 @@ internal class CodingSessionController
         
         AnsiConsole.Write(table);
         
-      
+        AnsiConsole.Write("\nPress any key to return to the main menu.\n");
+        Console.ReadKey();
+        Console.Clear();
     }
     internal void StartSession()
     {
